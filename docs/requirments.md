@@ -28,7 +28,7 @@
 [ReqId:01v10]: It shall be possible for the server to decrypt the cipher and get the public key of the client.
 [ReqId:01v11]: It shall be possible for the client to expire its private and public key.
 [ReqId:01v12]: It shall be possible for the client to generate a new set of public and private keys.
-[ReqId:01v13]: It shall be possible for thr user to establish a session which is managed by the server.
+[ReqId:01v13]: It shall be possible for thr user to establish a session which is managed by the server as shown in the sequence diagram.
 [ReqId:01v14]: It shall be possible for the client to send a request to the server to establish a session securely.
 [ReqId:01v15]: It shall be possible for the server to handle only one session at a time.
 [ReqId:01v16]: It shall be possible for the user to end a session.
