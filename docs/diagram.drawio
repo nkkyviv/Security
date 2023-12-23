@@ -4,24 +4,6 @@
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
-                <mxCell id="52" value="Protocol" style="swimlane;fontStyle=0;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;html=1;" parent="1" vertex="1">
-                    <mxGeometry x="1740" y="690" width="350" height="118" as="geometry"/>
-                </mxCell>
-                <mxCell id="54" value="-&amp;nbsp; speed:&amp;nbsp; uint32" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="52" vertex="1">
-                    <mxGeometry y="30" width="350" height="20" as="geometry"/>
-                </mxCell>
-                <mxCell id="57" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;" parent="52" vertex="1">
-                    <mxGeometry y="50" width="350" height="8" as="geometry"/>
-                </mxCell>
-                <mxCell id="59" value="+ Protocol_init(speed): bool" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="52" vertex="1">
-                    <mxGeometry y="58" width="350" height="20" as="geometry"/>
-                </mxCell>
-                <mxCell id="61" value="+ Protocol_receive(): uint32_t*" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="52" vertex="1">
-                    <mxGeometry y="78" width="350" height="20" as="geometry"/>
-                </mxCell>
-                <mxCell id="60" value="+ Protocol_send(buffer: uint32_t [ ] ): bool" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="52" vertex="1">
-                    <mxGeometry y="98" width="350" height="20" as="geometry"/>
-                </mxCell>
                 <mxCell id="172" style="edgeStyle=none;html=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="84" target="109" edge="1">
                     <mxGeometry relative="1" as="geometry">
                         <Array as="points">
@@ -66,32 +48,23 @@
                 <mxCell id="109" value="PROGRAM" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
                     <mxGeometry x="1320" width="250" height="60" as="geometry"/>
                 </mxCell>
-                <mxCell id="229" value="Session" style="swimlane;fontStyle=0;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;html=1;" vertex="1" parent="1">
-                    <mxGeometry x="1630" y="372" width="570" height="178" as="geometry"/>
+                <mxCell id="238" value="Protocol" style="swimlane;fontStyle=0;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="1680" y="660" width="400" height="118" as="geometry"/>
                 </mxCell>
-                <mxCell id="230" value="- aes_key : uint32_t&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp;&amp;nbsp;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" vertex="1" parent="229">
-                    <mxGeometry y="30" width="570" height="20" as="geometry"/>
+                <mxCell id="239" value="-&amp;nbsp; speed:&amp;nbsp; uint32" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" vertex="1" parent="238">
+                    <mxGeometry y="30" width="400" height="20" as="geometry"/>
                 </mxCell>
-                <mxCell id="231" value="- aes_iv : uint32_t [ ]" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" vertex="1" parent="229">
-                    <mxGeometry y="50" width="570" height="20" as="geometry"/>
+                <mxCell id="240" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;" vertex="1" parent="238">
+                    <mxGeometry y="50" width="400" height="8" as="geometry"/>
                 </mxCell>
-                <mxCell id="232" value="- Private_key : uint32_t [ ]" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontColor=#808080;" vertex="1" parent="229">
-                    <mxGeometry y="70" width="570" height="20" as="geometry"/>
+                <mxCell id="241" value="+ Protocol_init(speed): bool" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" vertex="1" parent="238">
+                    <mxGeometry y="58" width="400" height="20" as="geometry"/>
                 </mxCell>
-                <mxCell id="233" value="- public_key: uint32_t [ ]" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" vertex="1" parent="229">
-                    <mxGeometry y="90" width="570" height="20" as="geometry"/>
+                <mxCell id="242" value="+ Protocol_receive(buffer: uint32_t* [ ], size: sizeof(buffer[0])): uint32_t*" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" vertex="1" parent="238">
+                    <mxGeometry y="78" width="400" height="20" as="geometry"/>
                 </mxCell>
-                <mxCell id="234" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;" vertex="1" parent="229">
-                    <mxGeometry y="110" width="570" height="8" as="geometry"/>
-                </mxCell>
-                <mxCell id="235" value="+ session_init ( ): void" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" vertex="1" parent="229">
-                    <mxGeometry y="118" width="570" height="20" as="geometry"/>
-                </mxCell>
-                <mxCell id="236" value="+ session_transfer (struct: Transferdata) : void" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" vertex="1" parent="229">
-                    <mxGeometry y="138" width="570" height="20" as="geometry"/>
-                </mxCell>
-                <mxCell id="237" value="Transferdata( sessionId: uint32_t, requestType: uint32_t, buffer: uint32_t* [], buffer_size: sizeof(buffer[0]))" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" vertex="1" parent="229">
-                    <mxGeometry y="158" width="570" height="20" as="geometry"/>
+                <mxCell id="243" value="+ Protocol_send(buffer: uint32_t *[ ], size: sizeof(buffer[0])): bool" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" vertex="1" parent="238">
+                    <mxGeometry y="98" width="400" height="20" as="geometry"/>
                 </mxCell>
             </root>
         </mxGraphModel>
