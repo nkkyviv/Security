@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import ttk
+import client
 
 
 class Client:
@@ -18,14 +19,17 @@ class Client:
     def create_buttons(self):
         btn_session = tk.Button(self.window, text="Establish Session", command=self.establish_session, width=15, height=1)
         btn_session.place(x=270, y=10)
+        self.session_button = btn_session
 
         btn_temp = tk.Button(self.window, text="Get Temperature", command=self.get_temperature, width=15, height=1)
         btn_temp.place(x=450, y=10)
         btn_temp.config(state=tk.DISABLED)
+        self.btn_temp = btn_temp
 
         btn_led = tk.Button(self.window, text="Toggle LED", command=self.toggle_led, width=15, height=1)
         btn_led.place(x=630, y=10)
         btn_led.config(state=tk.DISABLED)
+        self.btn_led = btn_led
 
         clear_label = tk.Label(self.window, text='Clear', font=("Helvetica", 12), fg="blue", cursor="hand2")
         clear_label.place(x=730, y=49)
@@ -43,13 +47,51 @@ class Client:
         self.combo.bind("<<ComboboxSelected>>", self.display_selection)
 
     def establish_session(self):
-        pass
+            
+        selected_port = self.combo.get()
+        log_message = f"Selected Serial Port: {selected_port}"
+        
+        establish = client.establish_session(selected_port)
+        
+        if establish:
+            self.print_log("Session established")
+            self.btn_temp.config(state=tk.NORMAL)
+            self.btn_led.config(state=tk.NORMAL)
+            self.session_button.config(text="Close Session", command=self.close_session)
+        else:
+            self.print_log("Session not established")
+            self.btn_temp.config(state=tk.DISABLED)
+            self.btn_led.config(state=tk.DISABLED)
 
     def close_session(self):
-        pass
+        selected_port = self.combo.get()
+        log_message = f"Selected Serial Port: {selected_port}"
+        
+        close = client.close_session(selected_port)
+        
+        if close:
+            self.print_log("Session closed")
+            self.btn_temp.config(state=tk.DISABLED)
+            self.btn_led.config(state=tk.DISABLED)
+            self.session_button.config(text="Establish Session", command=self.establish_session)
+        else:
+            self.print_log("Session not closed")
+            self.btn_temp.config(state=tk.DISABLED)
+            self.btn_led.config(state=tk.DISABLED)
 
     def get_temperature(self):
-        pass
+        selected_port = self.combo.get()
+        log_message = f"Selected Serial Port: {selected_port}"
+        
+        temperature = client.get_temperature(selected_port)
+        
+
+        if temperature is not None:
+            log_message = f"Temperature: {temperature}"
+            self.print_log(log_message)
+        else:
+            self.print_log("Error: Unable to get temperature")
+        
 
     def toggle_led(self):
         pass
