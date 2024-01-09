@@ -3,11 +3,11 @@
 
 void setup()
 {
-    server_init(115200);
+    
     
 }
 
 void loop()
 {
-  server_run();
+  
 }
