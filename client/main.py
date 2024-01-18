@@ -87,7 +87,7 @@ class Client:
         
 
         if temperature is not None:
-            log_message = f"Temperature: {temperature}"
+            log_message = "Temperature: " + str(temperature) + " C"
             self.print_log(log_message)
         else:
             self.print_log("Error: Unable to get temperature")
