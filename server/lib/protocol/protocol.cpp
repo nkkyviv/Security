@@ -12,21 +12,12 @@ void protocol_init(uint32_t speed)
     delay(2000);
 }
 
-void protocol_send(uint8_t *buffer, size_t size)
+size_t protocol_send(uint8_t *buffer, size_t size)
 {
-    UART.write(buffer, size);
+    return UART.write(buffer, size);
 }
 
-bool protocol_receive(uint8_t *buffer, size_t size)
+size_t protocol_receive(uint8_t *buffer, size_t size)
 {
-    status = false;
-
-    size_t readBuffer = UART.readBytes(buffer, size);
-
-    if (readBuffer > 0)
-    {
-        status = true;
-    }
-
-    return status;
+  return UART.readBytes(buffer, size);
 }

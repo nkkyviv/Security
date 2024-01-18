@@ -1,8 +1,8 @@
 #include "server.h"
 #include <Arduino.h>
 #include "protocol.h"
+#include <string.h>
 
-/*arduino esp32 core temperature*/
 bool session_established = false;
 
 #ifdef __cplusplus
@@ -27,10 +27,10 @@ bool establish_session(void)
     if (!session_established)
     {
         session_established = true;
-        // Session successfully established
+       
     }
 
-    return true; // Session already established
+    return true; 
 }
 
 bool close_session(void)
@@ -40,59 +40,54 @@ bool close_session(void)
         session_established = false;
     }
 
-    return true; // No session to close
+    return true; 
 }
 
-
-void server_init(uint32_t speed)
+void press_command(char *command, char *buffer)
 {
-    protocol_init(speed);
-}
-
-void server_run()
-{
-    char command[30];
-
-    protocol_receive((uint8_t *)command, sizeof(command) - 1); // -1 to leave space for the null terminator
-
-    command[sizeof(command) - 1] = '\0';
-
-    Serial.println("Received command: ");
-
-    if (strcmp(command, "establish_session") == 0)
+    if (strcmp(command, "1") == 0)
     {
-
-        bool status = establish_session();
-
-        protocol_send((uint8_t *)&status, sizeof(status));
-
-        Serial.flush();
+        sprintf(buffer, "%d", establish_session());
     }
-
-    else if (strcmp(command, "get_temp") == 0)
+    else if (strcmp(command, "2") == 0)
     {
-
-        float temperature = getTemperature();
-
-        protocol_send(reinterpret_cast<uint8_t *>(&temperature), sizeof(temperature)); // send temp to client using
-
-        Serial.flush();
+        sprintf(buffer, "%.1f", getTemperature());
     }
-
-    else if (strcmp(command, "close_session") == 0)
+    else if (strcmp(command, "4") == 0)
     {
-        bool status = close_session();
-        protocol_send((uint8_t *)&status, sizeof(status));
-
-        Serial.flush();
+        sprintf(buffer, "%d", close_session());
     }
-
     else
     {
         ;
     }
 }
 
+void server_init(uint32_t speed)
+{
+    protocol_init(speed);
+    delay(1000);
+}
 
+void server_run()
+{
+    char buffer[8] = {0};
+    char command[4] = {0};
 
+    size_t length = protocol_receive((uint8_t *)command, sizeof(command) -1);
 
+    if (length == 0)
+    {
+        sprintf(buffer, "%d", session_established);
+    }
+    else if (length == 1)
+    {
+        press_command(command, buffer);
+    }
+    else
+    {
+        ;
+    }
+
+       protocol_send((uint8_t *)buffer, strlen(buffer));
+}
