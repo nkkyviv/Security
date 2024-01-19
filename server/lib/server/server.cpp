@@ -3,6 +3,8 @@
 #include "protocol.h"
 #include <string.h>
 
+#define LED 21
+
 bool session_established = false;
 
 #ifdef __cplusplus
@@ -27,10 +29,27 @@ bool establish_session(void)
     if (!session_established)
     {
         session_established = true;
-       
     }
 
-    return true; 
+    return true;
+}
+
+bool toggle_led(void)
+{
+    pinMode(LED, OUTPUT);
+    static bool led_state = false;
+    if (!led_state)
+    {
+        digitalWrite(LED, HIGH);
+        led_state = true;
+    }
+    else if (led_state)
+    {
+        digitalWrite(LED, LOW);
+        led_state = false;
+    }
+
+    return led_state;
 }
 
 bool close_session(void)
@@ -40,7 +59,7 @@ bool close_session(void)
         session_established = false;
     }
 
-    return true; 
+    return true;
 }
 
 void press_command(char *command, char *buffer)
@@ -52,6 +71,10 @@ void press_command(char *command, char *buffer)
     else if (strcmp(command, "2") == 0)
     {
         sprintf(buffer, "%.1f", getTemperature());
+    }
+    else if (strcmp(command, "3") == 0)
+    {
+        sprintf(buffer, "%d", toggle_led());
     }
     else if (strcmp(command, "4") == 0)
     {
@@ -76,36 +99,23 @@ void server_run()
 
     size_t length = protocol_receive((char *)command, sizeof(command) - 1);
 
-    if (length == 0)
-    {
-        sprintf(buffer, "%d", session_established);
-    }
-    else if (length == 1)
+    if (length == 1)
     {
         press_command(command, buffer);
     }
     else
     {
-        ;
+        protocol_receive((char *)buffer, sizeof(buffer) - 1);
     }
 
-    protocol_send((uint8_t *)buffer, strlen(buffer));
-    memset(buffer, 0, sizeof(buffer));  
+    size_t size = protocol_send((uint8_t *)buffer, strlen(buffer));
 
-    // size_t length = protocol_receive((uint8_t *)command, sizeof(command) -1);
-
-    // if (length == 0)
-    // {
-    //     sprintf(buffer, "%d", session_established);
-    // }
-    // else if (length == 1)
-    // {
-    //     press_command(command, buffer);
-    // }
-    // else
-    // {
-    //     ;
-    // }
-
-    //    protocol_send((uint8_t *)buffer, strlen(buffer));
+    if (size != strlen(buffer))
+    {
+        protocol_send((uint8_t *)buffer, strlen(buffer));
+    }
+    else
+    {
+        ;
+    }
 }

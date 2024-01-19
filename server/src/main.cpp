@@ -3,8 +3,7 @@
 
 void setup()
 {
-    server_init(115200);
-    
+  server_init(115200);
 }
 
 void loop()
