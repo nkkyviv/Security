@@ -64,10 +64,7 @@ class Client:
             self.btn_led.config(state=tk.DISABLED)
 
     def close_session(self):
-        selected_port = self.combo.get()
-        log_message = f"Selected Serial Port: {selected_port}"
-        
-        close = client.close_session(selected_port)
+        close = client.close_session()
         
         if close:
             self.print_log("Session closed")
@@ -80,21 +77,24 @@ class Client:
             self.btn_led.config(state=tk.DISABLED)
 
     def get_temperature(self):
-        selected_port = self.combo.get()
-        log_message = f"Selected Serial Port: {selected_port}"
+        temperature = client.get_temperature()
         
-        temperature = client.get_temperature(selected_port)
-        
-
         if temperature is not None:
-            log_message = f"Temperature: {temperature}"
+            log_message = "Temperature: " + str(temperature.decode('utf-8')) + " C"
             self.print_log(log_message)
         else:
             self.print_log("Error: Unable to get temperature")
-        
-
+            
+            
     def toggle_led(self):
-        pass
+        led_state = client.toggle_led()
+
+        if led_state is not None:
+            message = "Led state: " + ("ON" if led_state.decode('utf-8') == "1" else "OFF")
+            self.print_log(message)
+        else:
+            self.print_log("Error: Unable to toggle led!")
+
 
     def text_box(self):
         frame = tk.Frame(self.window, width=780, height=510, bg="black")
