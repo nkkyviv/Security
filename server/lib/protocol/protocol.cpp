@@ -17,7 +17,13 @@ size_t protocol_send(uint8_t *buffer, size_t size)
     return UART.write(buffer, size);
 }
 
-size_t protocol_receive(uint8_t *buffer, size_t size)
+
+
+// size_t protocol_receive(uint8_t *buffer, size_t size)
+// {
+//   return UART.readBytes(buffer, size);
+// }
+size_t protocol_receive(char *buffer, size_t size)
 {
   return UART.readBytes(buffer, size);
 }

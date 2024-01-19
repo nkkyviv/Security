@@ -11,6 +11,8 @@ def protocol_init(baudrate, port):
 def protocol_send(data, length):
     global ser
     if length is None:
+        print("Error")
+    else:
         ser.write(data)
     return time.time()
 

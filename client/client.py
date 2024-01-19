@@ -39,6 +39,22 @@ def get_temperature(port):
 
     return received_data
     
+def toggle_led(port):
+    request = b"3"
+    length = len(request)
+    print(length)
+
+    protocol.protocol_send(request, length)
+    time.sleep(1)
+    
+    response_size = 1
+    response_data = b''
+    
+    received_data = protocol.protocol_receive(response_data,response_size)
+
+    print("received_data:", received_data)
+    
+    return received_data
 
 def close_session(port):
     request = b"4"

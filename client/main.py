@@ -87,14 +87,21 @@ class Client:
         
 
         if temperature is not None:
-            log_message = "Temperature: " + str(temperature) + " C"
+            log_message = "Temperature: " + str(temperature.decode('utf-8')) + " C"
             self.print_log(log_message)
         else:
             self.print_log("Error: Unable to get temperature")
         
 
     def toggle_led(self):
-        pass
+        selected_port = self.combo.get()
+        led_state = client.toggle_led(selected_port)
+
+        if led_state is not None:
+            message = "Led state: " + str(led_state.decode('utf-8'))
+            self.print_log(message)
+        else:
+            self.print_log("Error: Unable to toggle led!")
 
     def text_box(self):
         frame = tk.Frame(self.window, width=780, height=510, bg="black")

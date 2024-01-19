@@ -74,7 +74,7 @@ void server_run()
     char buffer[8] = {0};
     char command[4] = {0};
 
-    size_t length = protocol_receive((uint8_t *)command, sizeof(command) -1);
+    size_t length = protocol_receive((char *)command, sizeof(command) - 1);
 
     if (length == 0)
     {
@@ -89,5 +89,23 @@ void server_run()
         ;
     }
 
-       protocol_send((uint8_t *)buffer, strlen(buffer));
+    protocol_send((uint8_t *)buffer, strlen(buffer));
+    memset(buffer, 0, sizeof(buffer));  
+
+    // size_t length = protocol_receive((uint8_t *)command, sizeof(command) -1);
+
+    // if (length == 0)
+    // {
+    //     sprintf(buffer, "%d", session_established);
+    // }
+    // else if (length == 1)
+    // {
+    //     press_command(command, buffer);
+    // }
+    // else
+    // {
+    //     ;
+    // }
+
+    //    protocol_send((uint8_t *)buffer, strlen(buffer));
 }
