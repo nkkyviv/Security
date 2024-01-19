@@ -4,8 +4,6 @@
 
 #define UART Serial
 
-bool status = false;
-
 void protocol_init(uint32_t speed)
 {
   UART.begin(speed);
