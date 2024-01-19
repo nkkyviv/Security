@@ -3,7 +3,6 @@
 
 #include <stdint.h>
 #include <stddef.h>
-#include <string>
 
 void protocol_init(uint32_t speed);
 
