@@ -54,10 +54,12 @@ class Client:
 
     def display_selection(self, event):
         port = self.combo.get()
+        if not port:
+            self.print_log("Error: Select a serial port to establish a session")
+        return
 
     def establish_session(self):
         success = session.Session.establish()
-        
         
         if success:
             self.print_log("Session established")
@@ -66,6 +68,7 @@ class Client:
             self.session_button.config(text="Close Session", command=self.close_session)
         else:
             self.print_log("Session not established")
+            self.print_log("Error: Select a serial port to establish a session")
             self.btn_temp.config(state=tk.DISABLED)
             self.btn_led.config(state=tk.DISABLED)
 

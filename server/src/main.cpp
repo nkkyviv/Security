@@ -13,7 +13,7 @@ void loop()
   static uint8_t state = LOW;
   uint8_t response[7] = {SESSION_OKAY};
 
-  request_t req = session_request();
+  int req = session_request();
 
   digitalWrite(GPIO_NUM_32, LOW);
 

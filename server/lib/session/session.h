@@ -4,17 +4,17 @@
 #include <stdint.h>
 #include <stddef.h>
 
-typedef enum
+enum
 {
     SESSION_OKAY,
     SESSION_ERROR,
     SESSION_TOGGLE_LED,
-    SESSION_TEMPERATURE
-} request_t;
+    SESSION_TEMPERATURE,
+};
 
 bool session_init(void);
 
-request_t session_request(void);
+int session_request(void);
 
 bool session_response(const uint8_t *resp, size_t size);
 #endif
