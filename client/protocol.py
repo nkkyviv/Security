@@ -8,22 +8,18 @@ def protocol_init(baudrate, port):
     global ser
     ser = serial.Serial(port, baudrate, timeout=1)
 
-def protocol_send(data, length):
+def protocol_send(data):
     global ser
-    if length is None:
-        print("Error")
-    else:
-        ser.write(data)
-    return time.time()
-
-def protocol_receive(data, length):
+    length=ser.write(data)
+    return length
+  
+def protocol_receive(length):
     global ser
     data = b''
     
     while len(data) < length:
         data += ser.read()
         
-    ser.reset_input_buffer()
     return data
 
 def protocol_close():

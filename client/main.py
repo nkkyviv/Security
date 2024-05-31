@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
 import client
+import serial.tools.list_ports
 
 
 class Client:
@@ -40,16 +41,28 @@ class Client:
 
         lbl_log = tk.Label(window, text="Log :", font=("Helvetica", 12))
         lbl_log.place(x=20, y=40)
-
-        options = ['/dev/ttyUSB0', '/dev/ttyUSB1']
-        self.combo = ttk.Combobox(window, state="readonly", width=15, height=4, value=options)
+        
+        self.combo = ttk.Combobox(window, state="readonly", width=15, height=4)
         self.combo.place(x=110, y=13)
         self.combo.bind("<<ComboboxSelected>>", self.display_selection)
 
+        self.update_serial_ports()
+
+    def update_serial_ports(self):
+        ports = [port.device for port in serial.tools.list_ports.comports()]
+        self.combo['values'] = ports
+
+    def display_selection(self, event):
+        port = self.combo.get()
+        if port:
+            self.print_log(f"Selected serial port: {port}")
+
     def establish_session(self):
-            
         selected_port = self.combo.get()
-        log_message = f"Selected Serial Port: {selected_port}"
+        
+        if not selected_port:
+            self.print_log("Error: Select a serial port to establish a session")
+            return
         
         establish = client.establish_session(selected_port)
         
@@ -80,11 +93,10 @@ class Client:
         temperature = client.get_temperature()
         
         if temperature is not None:
-            log_message = "Temperature: " + str(temperature.decode('utf-8')) + " C"
+            log_message = "Temperature: " + str(temperature.decode('utf-8')) + "\u00B0C"
             self.print_log(log_message)
         else:
             self.print_log("Error: Unable to get temperature")
-            
             
     def toggle_led(self):
         led_state = client.toggle_led()
@@ -95,31 +107,19 @@ class Client:
         else:
             self.print_log("Error: Unable to toggle led!")
 
-
     def text_box(self):
-        frame = tk.Frame(self.window, width=780, height=510, bg="black")
-        frame.place(x=10, y=70)
+        frame = tk.Frame(self.window, bg="black")
+        frame.place(x=10, y=70, width=780, height=510)
 
-        self.log_text = tk.StringVar()
-        self.label1 = tk.Label(master=frame, textvariable=self.log_text, bg="black", fg="white", font=("Courier", 10))
-        self.label1.place(x=0, y=0)  # Place label at (0, 0) 
+        self.log_text = tk.Text(frame, bg="black", fg="white", font=("Arial", 12), wrap="word")
+        self.log_text.pack(expand=True, fill="both")
         
-
     def clear_text(self):
-        self.log_text.set("")
+        self.log_text.delete(1.0, tk.END)
 
     def print_log(self, log):
-        current_text = self.log_text.get()
-        new_text = current_text + "\n" + log
-        self.log_text.set(new_text)
-        
-        
-    def display_selection(self, event):
-        selected_port = self.combo.get()
-        log_message = f"Selected Serial Port: {selected_port}"
-        self.print_log(log_message)
-        
-        
+        self.log_text.insert(tk.END, log + "\n")
+        self.log_text.see(tk.END)
 
 if __name__ == "__main__":
     window = tk.Tk()
