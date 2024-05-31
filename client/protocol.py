@@ -1,42 +1,18 @@
-#using serial communication using serial0
 import serial
-import time
 
-global ser
+SERIAL_BAUDRATE = 115200
 
-def protocol_init(baudrate, port):
-    global ser
-    ser = serial.Serial(port, baudrate, timeout=1)
+class Protocol:
+    ser = None
+    def __init__(self,port, baudrate=SERIAL_BAUDRATE):
+        Protocol.ser = serial.Serial(port, baudrate)
+        print("Connected to " + port)
 
-def protocol_send(data):
-    global ser
-    length=ser.write(data)
-    return length
-  
-def protocol_receive(length):
-    global ser
-    data = b''
-    
-    while len(data) < length:
-        data += ser.read()
+    def send_data(buf: bytes): 
+        return Protocol.ser.write(buf)
+
+    def receive_data(size: int) -> bytes:
+        return Protocol.ser.read(size)
         
-    return data
-
-def protocol_close():
-    global ser
-    
-    ser.close()
-
-
-   
-
-
-
-
-
-
-
-
-
-
-    
+    def close(self):
+          Protocol.ser.close()
