@@ -20,7 +20,7 @@ class ClientApp:
 
         self.log_text = tk.Text(self.master, bg="black", fg="white", font=("Arial", 12))
         self.log_text.place(x=20, y=90, width=760, height=480)
-        self.print_log("Please select a port")
+        self.print_log("Invalid port. Select a serial port")
 
         serial_label_text = "Serial Port: "
         self.serial_label = tk.Label(self.master, text=serial_label_text, font=("Arial", 12))
@@ -31,7 +31,7 @@ class ClientApp:
         self.log_label.place(x=20, y=60)
 
         self.clear_button = tk.Label(self.master, text='Clear', font=("Helvetica", 12), fg="blue", cursor="hand2")
-        self.clear_button.place(x=750, y=60)
+        self.clear_button.place(x=730, y=60)
         self.clear_button.bind("<Button-1>", lambda event: self.on_clear_button_click())
 
         self.select_combobox = ttk.Combobox(self.master, values=select_options, state="readonly", width=15)
@@ -101,9 +101,9 @@ class ClientApp:
                 try:
                     state_str = state.decode("utf-8").strip('\x00')
                     if state_str == HIGH:
-                        self.print_log("LED Status: ON")
+                        self.print_log("LED State: ON")
                     elif state_str == LOW:
-                        self.print_log("LED Status: OFF")
+                        self.print_log("LED State: OFF")
                     else:
                         self.print_log("Unexpected LED status response")
                 except Exception as e:
@@ -119,6 +119,7 @@ class ClientApp:
     def update_button_state(self, event):
         port = self.select_combobox.get()
         self.session = Session(port)
+        self.print_log(f"Serial port Selected: {port}")
         self.button_session.config(state=tk.NORMAL)
         self.getTemp_button.config(state=tk.DISABLED)
         self.toggleLed_button.config(state=tk.DISABLED)

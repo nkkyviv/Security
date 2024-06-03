@@ -16,7 +16,9 @@
 #define AES_KEY_SIZE 32
 #define AES_CIPHER_SIZE 16
 #define BUFFER_SIZE (RSA_SIZE + DER_SIZE)
+
 #define SESSION_CLOSE 0xFF
+#define SESSION_TIMEOUT 60000
 
 typedef struct
 {
@@ -45,50 +47,44 @@ static void led_error_check(int num)
     for (int i = 0; i < num; ++i)
     {
         digitalWrite(LED_ERROR, HIGH);
-        delay(250);
+        delay(200);
         digitalWrite(LED_ERROR, LOW);
-        delay(250);
+        delay(200);
     }
 }
 
 static size_t receive(uint8_t *buffer, size_t blen)
 {
 
-    size_t length = protocol_receive(buffer, blen);
+    size_t len = protocol_receive(buffer, blen);
 
-    if (length > HASH_SIZE)
+    if (len > HASH_SIZE)
     {
-        uint8_t hash[HASH_SIZE]{0};
+        len -= HASH_SIZE;
+        uint8_t hmac[HASH_SIZE]{0};
+
         mbedtls_md_hmac_starts(&hmac_ctx, hmac_hash, HASH_SIZE);
-        mbedtls_md_hmac_update(&hmac_ctx, buffer, length - HASH_SIZE);
-        mbedtls_md_hmac_finish(&hmac_ctx, hash);
+        mbedtls_md_hmac_update(&hmac_ctx, buffer, len);
+        mbedtls_md_hmac_finish(&hmac_ctx, hmac);
 
-        if (0 == memcmp(hash, buffer + (length - HASH_SIZE), HASH_SIZE))
+        if (0 != memcmp(hmac, buffer + len, HASH_SIZE))
         {
-            length -= HASH_SIZE;
+            len = 0;
         }
-        else
-        {
-            length = 0;
-        }
-    }
-    else
-    {
-        length = 0;
-    }
+       }
 
-    return length;
+    return len;
 }
 
-static bool send(uint8_t *buffer, size_t length)
+static bool send(uint8_t *buffer, size_t size)
 {
     mbedtls_md_hmac_starts(&hmac_ctx, hmac_hash, HASH_SIZE);
-    mbedtls_md_hmac_update(&hmac_ctx, buffer, length);
-    mbedtls_md_hmac_finish(&hmac_ctx, buffer + length);
+    mbedtls_md_hmac_update(&hmac_ctx, buffer, size);
+    mbedtls_md_hmac_finish(&hmac_ctx, buffer + size);
 
-    length += HASH_SIZE;
+    size += HASH_SIZE;
 
-    return protocol_send(buffer, length);
+    return protocol_send(buffer, size);
 }
 
 void session_init()
@@ -338,31 +334,31 @@ static void establish_session(uint8_t *buffer)
 
 int session_request(void)
 {
-    message_t msg{0};
+    message_t message{0};
     int status{SESSION_OKAY};
 
-    msg.length = receive(msg.buffer, BUFFER_SIZE);
+    message.length = receive(message.buffer, BUFFER_SIZE);
 
-    if (msg.length == DER_SIZE)
+    if (message.length == DER_SIZE)
     {
-        exchange_public_keys(msg.buffer);
+        exchange_public_keys(message.buffer);
     }
-    else if (msg.length == 2 * RSA_SIZE)
+    else if (message.length == 2 * RSA_SIZE)
     {
-        establish_session(msg.buffer);
+        establish_session(message.buffer);
         prev_millis = millis();
     }
-    else if (msg.length == AES_CIPHER_SIZE)
+    else if (message.length == AES_CIPHER_SIZE)
     {
         if (session_id != 0)
         {
             uint32_t now = millis();
 
-            if (now - prev_millis <= 60000) // timer
+            if (now - prev_millis <= SESSION_TIMEOUT) // timer
             {
                 uint8_t cipher[AES_CIPHER_SIZE]{0};
 
-                if (0 != mbedtls_aes_crypt_cbc(&aes_ctx, MBEDTLS_AES_DECRYPT, msg.length, dec_iv, msg.buffer, cipher))
+                if (0 != mbedtls_aes_crypt_cbc(&aes_ctx, MBEDTLS_AES_DECRYPT, message.length, dec_iv, message.buffer, cipher))
                 {
                     led_error_check(4);
                 }
@@ -375,9 +371,9 @@ int session_request(void)
             }
             else
             {
-                response_t res = {0};
-                res.data[0] = SESSION_CLOSE;
-                session_response(&res);
+                response_t resp = {0};
+                resp.data[0] = SESSION_CLOSE;
+                session_response(&resp);
                 session_id = 0;
             }
         }

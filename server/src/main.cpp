@@ -42,7 +42,7 @@ void loop()
   {
     resp.data[0] = SESSION_OKAY;
     toggle_led();
-    // Respond with the current LED state
+
     sprintf((char *)&resp.data[1], "%d", ledState);
     req = session_response(&resp);
   }

@@ -8,6 +8,7 @@ class Session:
     SECRET_KEY = b"Fj2-;wu3Ur=ARl2!Tqi6IuKM3nG]8z1+"
     TEMP = 0x02
     LED = 0x03
+    SESSION_OKAY = 0x01
     
     def __init__(self, port):
         self.SESSION_ID = b''
@@ -40,25 +41,24 @@ class Session:
         return rec
         
     def exchange_keys(self):
-        self.send(self.CLIENT_RSA.export_public_key())
+        if True == self.send(self.CLIENT_RSA.export_public_key()):
 
-        buffer = self.receive(2 * self.RSA_SIZE)
-        server_key_pub = self.CLIENT_RSA.decrypt(buffer[0:self.RSA_SIZE])
-        server_key_pub += self.CLIENT_RSA.decrypt(buffer[self.RSA_SIZE:2*self.RSA_SIZE])
-        self.SERVER_RSA = pk.RSA().from_DER(server_key_pub)
+            buffer = self.receive(2 * self.RSA_SIZE)
+            server_key_pub = self.CLIENT_RSA.decrypt(buffer[0:self.RSA_SIZE])
+            server_key_pub += self.CLIENT_RSA.decrypt(buffer[self.RSA_SIZE:2*self.RSA_SIZE])
+            self.SERVER_RSA = pk.RSA().from_DER(server_key_pub)
 
-        del self.CLIENT_RSA
-        self.CLIENT_RSA = pk.RSA()
-        self.CLIENT_RSA.generate(self.RSA_SIZE * 8, self.EXPONENT)
+            del self.CLIENT_RSA
+            self.CLIENT_RSA = pk.RSA()
+            self.CLIENT_RSA.generate(self.RSA_SIZE * 8, self.EXPONENT)
 
-        buffer = self.CLIENT_RSA.export_public_key() + self.CLIENT_RSA.sign(self.SECRET_KEY, "SHA256")
-        buffer = self.SERVER_RSA.encrypt(buffer[0: 184]) + self.SERVER_RSA.encrypt(buffer[184:368]) + self.SERVER_RSA.encrypt(buffer[368:550])
-        self.send(buffer)
+            buffer = self.CLIENT_RSA.export_public_key() + self.CLIENT_RSA.sign(self.SECRET_KEY, "SHA256")
+            buffer = self.SERVER_RSA.encrypt(buffer[0: 184]) + self.SERVER_RSA.encrypt(buffer[184:368]) + self.SERVER_RSA.encrypt(buffer[368:550])
+            if True == self.send(buffer):
+                buffer = self.receive(self.RSA_SIZE)
 
-        buffer = self.receive(self.RSA_SIZE)
-
-        if b"OKAY" == self.CLIENT_RSA.decrypt(buffer):
-            self.establish()
+                if b"OKAY" == self.CLIENT_RSA.decrypt(buffer):
+                    self.establish()
 
     def send(self, buf: bytes) -> bool:
         self.HMAC_CS.update(buf)
@@ -92,15 +92,15 @@ class Session:
         buffer = request + self.SESSION_ID
         plen = cipher.AES.block_size - (len(buffer) % cipher.AES.block_size)
         buffer = self.aes.encrypt(buffer + bytes([len(buffer)] * plen))
-        self.send(buffer)
+        if True == self.send(buffer):
 
-        buffer = self.receive(cipher.AES.block_size)
-        buffer = self.aes.decrypt(buffer)
+            buffer = self.receive(cipher.AES.block_size)
+            buffer = self.aes.decrypt(buffer)
 
-        if buffer[0] == 0x01:
-            return buffer[1:6]
-        else:
-            return None
-    
+            if buffer[0] == self.SESSION_OKAY:
+                return buffer[1:6]
+            else:
+                return None
+        
 
 
