@@ -31,10 +31,9 @@ def create_window(serial_address, select_options):
         else:
             selected_port = select_combobox.get()
             if protocol.init(selected_port):
-                #if protocol.send(bytes([SESSION_ESTABLISH])):
-                    #received_bytes = protocol.receive(1)
-                    if session.establish():
-                    #if received_bytes[0] == STATUS_OKAY:
+                if protocol.send(bytes([SESSION_ESTABLISH])):
+                    received_bytes = protocol.receive(1)
+                    if received_bytes[0] == STATUS_OKAY:
                         log_text.delete(1.0, tk.END)
                         log_text.insert(tk.END, f"Session established on {selected_port}\n")
                         button1.config(text="Close Session")
@@ -48,13 +47,13 @@ def create_window(serial_address, select_options):
                         button1.config(state=tk.NORMAL)
                         button2.config(state=tk.DISABLED)
                         button3.config(state=tk.DISABLED)
-                # else:
-                #     log_text.delete(1.0, tk.END)
-                #     log_text.insert(tk.END, "Failed to send establish session command\n")
-                #     button1.config(text="Establish Session")
-                #     button1.config(state=tk.NORMAL)
-                #     button2.config(state=tk.DISABLED)
-                #     button3.config(state=tk.DISABLED)
+                else:
+                    log_text.delete(1.0, tk.END)
+                    log_text.insert(tk.END, "Failed to send establish session command\n")
+                    button1.config(text="Establish Session")
+                    button1.config(state=tk.NORMAL)
+                    button2.config(state=tk.DISABLED)
+                    button3.config(state=tk.DISABLED)
             else:
                 log_text.delete(1.0, tk.END)
                 log_text.insert(tk.END, "Failed to initialize port\n")
