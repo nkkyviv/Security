@@ -9,9 +9,9 @@ bool protocol_init()
   return Serial;
 }
 
-size_t protocol_send(const uint8_t *buffer, size_t size)
+bool protocol_send(const uint8_t *buffer, size_t size)
 {
-  return Serial.write(buffer, size);
+  return (size == Serial.write(buffer, size));
 }
 
 size_t protocol_receive(uint8_t *buffer, size_t size)

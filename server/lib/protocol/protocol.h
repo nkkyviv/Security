@@ -6,7 +6,7 @@
 
 bool protocol_init();
 
-size_t protocol_send(const uint8_t *buffer, size_t size);
+bool protocol_send(const uint8_t *buffer, size_t size);
 
 size_t protocol_receive(uint8_t *buffer, size_t size);
 

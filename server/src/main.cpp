@@ -1,54 +1,54 @@
 #include <Arduino.h>
 #include "session.h"
-#include "ser.h"
+// #include "ser.h"
+
+#define LED_PIN 21
+
+// Variable to keep track of LED state
+int ledState = LOW;
+
+static void toggle_led(void)
+{
+  ledState = !ledState;
+  digitalWrite(LED_PIN, ledState);
+}
 
 void setup()
 {
-  ser_init();
-  // session_init();
-  // pinMode(GPIO_NUM_32, OUTPUT);
-  // pinMode(GPIO_NUM_21, OUTPUT);
+  // ser_init();
+  pinMode(LED_PIN, OUTPUT); 
+  pinMode(GPIO_NUM_21, OUTPUT);
+  delay(100);
+  session_init();
 }
 
 void loop()
 {
-  ser_run();
-  // static uint8_t state = LOW;
-  // uint8_t response[7] = {SESSION_OKAY};
+  // ser_run();
+  response_t resp = {0};
 
-  // int req = session_request();
+  int req = session_request();
 
-  // digitalWrite(GPIO_NUM_32, LOW);
+  digitalWrite(GPIO_NUM_32, LOW);
 
-  // switch (req)
-  // {
-  // case SESSION_TEMPERATURE:
-  //   sprintf((char *)&response[1], "%2.2f", temperatureRead());
-  //   if (!session_response(response, sizeof(response)))
-  //   {
-  //     req = SESSION_ERROR;
-  //   }
-  //   break;
+  if (req == SESSION_TEMPERATURE)
+  {
+    resp.data[0] = SESSION_OKAY;
+    sprintf((char *)&resp.data[1], "%2.2f", temperatureRead());
 
-  // case SESSION_TOGGLE_LED:
-  //   state = (state == LOW) ? HIGH : LOW;
-  //   digitalWrite(GPIO_NUM_21, state);
-  //   response[1] = digitalRead(GPIO_NUM_21);
-  //   if (state != response[1])
-  //   {
-  //     response[0] = SESSION_ERROR;
-  //   }
-  //   if (!session_response(response, sizeof(response)))
-  //   {
-  //     req = SESSION_ERROR;
-  //   }
-  //   break;
-  // default:
-  //   break;
-  // }
+    req = session_response(&resp);
+  }
+  else if (req == SESSION_TOGGLE_LED)
+  {
+    resp.data[0] = SESSION_OKAY;
+    toggle_led();
+    // Respond with the current LED state
+    sprintf((char *)&resp.data[1], "%d", ledState);
+    req = session_response(&resp);
+  }
 
-  // if (req == SESSION_ERROR)
-  // {
-  //   digitalWrite(GPIO_NUM_32, HIGH);
-  // }
+  if (req == SESSION_ERROR)
+  {
+    digitalWrite(GPIO_NUM_32, HIGH);
+  }
 }

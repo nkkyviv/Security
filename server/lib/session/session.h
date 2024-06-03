@@ -6,15 +6,21 @@
 
 enum
 {
-    SESSION_OKAY,
     SESSION_ERROR,
-    SESSION_TOGGLE_LED,
+    SESSION_OKAY,
     SESSION_TEMPERATURE,
+    SESSION_TOGGLE_LED,
 };
 
-bool session_init(void);
+typedef struct response_t
+{
+    uint8_t len;
+    uint8_t data[8];
+};
+
+void session_init(void);
 
 int session_request(void);
 
-bool session_response(const uint8_t *resp, size_t size);
+int session_response(response_t *resp);
 #endif
