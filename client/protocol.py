@@ -1,18 +1,28 @@
 import serial
 
-SERIAL_BAUDRATE = 115200
 
-class Protocol:
-    ser = None
-    def __init__(self,port, baudrate=SERIAL_BAUDRATE):
-        Protocol.ser = serial.Serial(port, baudrate)
-        print("Connected to " + port)
+def init(port):
+    global sercom
+    sercom = serial.Serial(port, 115200)
+    return sercom.is_open
 
-    def send_data(buf: bytes): 
-        return Protocol.ser.write(buf)
+def close():
+    global sercom
+    sercom.close()
 
-    def receive_data(size: int) -> bytes:
-        return Protocol.ser.read(size)
+def send(data: bytes):
+    status = False
+    global sercom
+    if sercom.is_open:
+        sercom.reset_output_buffer()
+        status = (len(data) == sercom.write(data))
+    return status
         
-    def close(self):
-          Protocol.ser.close()
+
+def receive(size: int) -> bytes:
+    data = b''
+    global sercom
+    if sercom.is_open:
+        sercom.reset_input_buffer()
+        data = sercom.read(size)
+    return data

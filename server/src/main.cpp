@@ -1,8 +1,10 @@
 #include <Arduino.h>
 #include "session.h"
+#include "ser.h"
 
 void setup()
 {
+  //ser_init();
   session_init();
   pinMode(GPIO_NUM_32, OUTPUT);
   pinMode(GPIO_NUM_21, OUTPUT);
@@ -10,6 +12,7 @@ void setup()
 
 void loop()
 {
+  //ser_run();
   static uint8_t state = LOW;
   uint8_t response[7] = {SESSION_OKAY};
 
