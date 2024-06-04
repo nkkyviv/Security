@@ -6,8 +6,8 @@ class Session:
     RSA_SIZE = 256
     EXPONENT = 65537
     SECRET_KEY = b"Fj2-;wu3Ur=ARl2!Tqi6IuKM3nG]8z1+"
-    TEMP = 0x02
-    LED = 0x03
+    SESSION_TEMPERATURE = 0x02
+    SESSION_TOGGLE_LED = 0x03
     SESSION_OKAY = 0x01
     
     def __init__(self, port):
@@ -33,11 +33,11 @@ class Session:
         return Session.state
     
     def get_temperature(self):
-        recieved = self.request(int(self.TEMP))
+        recieved = self.request(int(self.SESSION_TEMPERATURE))
         return recieved
     
     def toggle_led(self):
-        rec = self.request(int(self.LED))
+        rec = self.request(int(self.SESSION_TOGGLE_LED))
         return rec
         
     def exchange_keys(self):

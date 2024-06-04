@@ -15,7 +15,7 @@
 #define EXPONENT 65537
 #define AES_KEY_SIZE 32
 #define AES_CIPHER_SIZE 16
-#define BUFFER_SIZE (RSA_SIZE + DER_SIZE)
+
 
 #define SESSION_CLOSE 0xFF
 #define SESSION_TIMEOUT 60000
@@ -23,7 +23,7 @@
 typedef struct
 {
     size_t length;
-    uint8_t buffer[BUFFER_SIZE];
+    uint8_t buffer[RSA_SIZE + DER_SIZE];
 } message_t;
 
 static uint32_t prev_millis;
@@ -337,7 +337,7 @@ int session_request(void)
     message_t message{0};
     int status{SESSION_OKAY};
 
-    message.length = receive(message.buffer, BUFFER_SIZE);
+    message.length = receive(message.buffer, (RSA_SIZE + DER_SIZE));
 
     if (message.length == DER_SIZE)
     {
@@ -399,7 +399,7 @@ int session_response(response_t *resp)
         if (!send(cipher, resp->len))
         {
             status = SESSION_ERROR;
-            led_error_check(4);
+            led_error_check(5);
         }
     }
 
