@@ -9,6 +9,7 @@ class Session:
     SESSION_TEMPERATURE = 0x02
     SESSION_TOGGLE_LED = 0x03
     SESSION_OKAY = 0x01
+    SESSION_CLOSE = 0xFF
     
     def __init__(self, port):
         self.SESSION_ID = b''

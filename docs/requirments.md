@@ -18,7 +18,7 @@
 
 [ReqId:01v01]: It shall be possible to have a led connected to the server.
 [ReqId:01v02]: It shall be possible to have a serial connection where the server and the client communicate with each other.
-[ReqId:01v03]: It shall be possible to generate a temporary random pair of keys (a public key and a private key) for both the client and the server according to the sequence diagram.
+[ReqId:01v03]: It shall be possible to generate a temporary random pair of keys (a public key and a private key) for both the client and the server according to the sequence diagram (project.drawio).
 [ReqId:01v04]: It shall be possible for the client to send its public key without encryption to the server.
 [ReqId:01v05]: It shall be possible for the server encrypts its public key using the client public key and its should be protected using HMAC-256.
 [ReqId:01v06]: It shall be possible for the server to send the Cipher to the client securely using AES-256.

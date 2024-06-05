@@ -26,7 +26,6 @@ typedef struct
     uint8_t buffer[RSA_SIZE + DER_SIZE];
 } message_t;
 
-static uint32_t prev_millis;
 static mbedtls_aes_context aes_ctx;
 static mbedtls_md_context_t hmac_ctx;
 static mbedtls_pk_context client_ctx;
@@ -41,6 +40,9 @@ static uint8_t dec_iv[AES_CIPHER_SIZE]{0};
 static const uint8_t hmac_hash[HASH_SIZE] = {0x29, 0x49, 0xde, 0xc2, 0x3e, 0x1e, 0x34, 0xb5, 0x2d, 0x22, 0xb5,
                                              0xba, 0x4c, 0x34, 0x23, 0x3a, 0x9d, 0x3f, 0xe2, 0x97, 0x14, 0xbe,
                                              0x24, 0x62, 0x81, 0x0c, 0x86, 0xb1, 0xf6, 0x92, 0x54, 0xd6};
+
+static uint32_t prev_millis;
+
 
 static void led_error_check(int num)
 {
@@ -85,47 +87,6 @@ static bool send(uint8_t *buffer, size_t size)
     size += HASH_SIZE;
 
     return protocol_send(buffer, size);
-}
-
-void session_init()
-{
-    pinMode(LED_ERROR, OUTPUT);
-
-    protocol_init();
-
-    // HMAC-SHA256
-    mbedtls_md_init(&hmac_ctx);
-    if(0 != mbedtls_md_setup(&hmac_ctx, mbedtls_md_info_from_type(MBEDTLS_MD_SHA256), 1))
-    {
-        led_error_check(1);
-    }
-
-    // AES-256
-    mbedtls_aes_init(&aes_ctx);
-
-    uint8_t initial[AES_KEY_SIZE]{0};
-    mbedtls_entropy_init(&entropy);
-    mbedtls_ctr_drbg_init(&ctr_drbg);
-    for (size_t i = 0; i < sizeof(initial); i++)
-    {
-        initial[i] = random(0x100);
-    }
-    if(0 != mbedtls_ctr_drbg_seed(&ctr_drbg, mbedtls_entropy_func, &entropy, initial, sizeof(initial)))
-    {
-        led_error_check(1);
-    }
-
-    // RSA-2048
-    mbedtls_pk_init(&server_ctx);
-    if(0 != mbedtls_pk_setup(&server_ctx, mbedtls_pk_info_from_type(MBEDTLS_PK_RSA)))
-    {
-        led_error_check(1);
-    }
-    if(0 == mbedtls_rsa_gen_key(mbedtls_pk_rsa(server_ctx), mbedtls_ctr_drbg_random,
-                                    &ctr_drbg, RSA_SIZE * CHAR_BIT, EXPONENT))
-    {
-        led_error_check(1);
-    }
 }
 
 static void exchange_public_keys(uint8_t *buffer)
@@ -331,6 +292,50 @@ static void establish_session(uint8_t *buffer)
         led_error_check(3);
     }
 }
+
+void session_init()
+{
+    pinMode(LED_ERROR, OUTPUT);
+
+    protocol_init();
+
+    // HMAC-SHA256
+    mbedtls_md_init(&hmac_ctx);
+    if(0 != mbedtls_md_setup(&hmac_ctx, mbedtls_md_info_from_type(MBEDTLS_MD_SHA256), 1))
+    {
+        led_error_check(1);
+    }
+
+    // AES-256
+    mbedtls_aes_init(&aes_ctx);
+
+    uint8_t initial[AES_KEY_SIZE]{0};
+    mbedtls_entropy_init(&entropy);
+    mbedtls_ctr_drbg_init(&ctr_drbg);
+
+    for (size_t i = 0; i < sizeof(initial); i++)
+    {
+        initial[i] = random(0x100);
+    }
+    if(0 != mbedtls_ctr_drbg_seed(&ctr_drbg, mbedtls_entropy_func, &entropy, initial, sizeof(initial)))
+    {
+        led_error_check(1);
+    }
+
+    // RSA-2048
+    mbedtls_pk_init(&server_ctx);
+
+    if(0 != mbedtls_pk_setup(&server_ctx, mbedtls_pk_info_from_type(MBEDTLS_PK_RSA)))
+    {
+        led_error_check(1);
+    }
+    if(0 == mbedtls_rsa_gen_key(mbedtls_pk_rsa(server_ctx), mbedtls_ctr_drbg_random,
+                                    &ctr_drbg, RSA_SIZE * CHAR_BIT, EXPONENT))
+    {
+        led_error_check(1);
+    }
+}
+
 
 int session_request(void)
 {
