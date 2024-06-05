@@ -16,7 +16,7 @@ typedef struct response_t
 {
     uint8_t len;
     uint8_t data[8];
-};
+} response_t;
 
 void session_init(void);
 

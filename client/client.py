@@ -2,8 +2,8 @@ import struct
 import tkinter as tk
 from tkinter import ttk
 import serial.tools.list_ports
-import protocol
 from session import Session
+import time
 
 HIGH = "1"
 LOW = "0"
@@ -17,9 +17,10 @@ class ClientApp:
     def create_widgets(self, select_options):
         self.master.title("Client")
         self.master.geometry("800x600")
+        self.master.resizable(False, False)
 
         self.log_text = tk.Text(self.master, bg="black", fg="white", font=("Arial", 12))
-        self.log_text.place(x=20, y=90, width=760, height=480)
+        self.log_text.place(x=20, y=90, width=760, height=490)
         self.print_log("Invalid port. Select a serial port")
 
         serial_label_text = "Serial Port: "
@@ -34,7 +35,7 @@ class ClientApp:
         self.clear_button.place(x=730, y=60)
         self.clear_button.bind("<Button-1>", lambda event: self.on_clear_button_click())
 
-        self.select_combobox = ttk.Combobox(self.master, values=select_options, state="readonly", width=15)
+        self.select_combobox = ttk.Combobox(self.master, values=select_options, state="readonly", width=12)
         self.select_combobox.set("")
         self.select_combobox.place(x=110, y=13)
         self.select_combobox.config(font=("Arial", 12))
@@ -79,6 +80,10 @@ class ClientApp:
 
     def get_temp(self):
         if self.session:
+            if self.session.is_timed_out():
+                self.print_log("Session timed out")
+                self.close_session()
+                return
             received_bytes = self.session.get_temperature()
             if received_bytes is not None:
                 try:
@@ -91,11 +96,13 @@ class ClientApp:
             else:
                 self.clear_text()
                 self.print_log("Error: Unable to get temperature")
-        else:
-            self.print_log("No active session")
 
     def toggle_led(self):
         if self.session:
+            if self.session.is_timed_out():
+                self.print_log("Session timed out")
+                self.close_session()
+                return
             state = self.session.toggle_led()
             if state is not None:
                 try:
@@ -110,8 +117,6 @@ class ClientApp:
                     self.print_log(f"Error decoding LED status: {str(e)}")
             else:
                 self.print_log("Failed to send toggle LED command")
-        else:
-            self.print_log("No active session")
 
     def on_clear_button_click(self):
         self.log_text.delete(1.0, tk.END)
@@ -125,7 +130,7 @@ class ClientApp:
         self.toggleLed_button.config(state=tk.DISABLED)
 
     def print_log(self, log):
-        self.log_text.insert(tk.END, log + '\n')
+        self.log_text.insert(tk.END,f"{time.strftime('%H:%M:%S')} - {log}\n")
         self.log_text.see(tk.END)
 
     def clear_text(self):

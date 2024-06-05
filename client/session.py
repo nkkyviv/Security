@@ -1,5 +1,6 @@
 from mbedtls import pk, hmac, hashlib, cipher
 import protocol
+import time
 
 class Session:
     state = None
@@ -10,6 +11,7 @@ class Session:
     SESSION_TOGGLE_LED = 0x03
     SESSION_OKAY = 0x01
     SESSION_CLOSE = 0xFF
+    TIMEOUT_DURATION = 60
     
     def __init__(self, port):
         self.SESSION_ID = b''
@@ -24,20 +26,28 @@ class Session:
         self.CLIENT_RSA.generate(self.RSA_SIZE * 8, self.EXPONENT)
         self.exchange_keys()
         Session.state = port
+        self.last_activity_time = time.time()
         
     def select():
         Session.state
         if Session.state != None:
+            last_activity_time = time.time()
             Session.state = True
         else:
             Session.state = False
         return Session.state
     
     def get_temperature(self):
+        if self.is_timed_out():
+            return None
+        self.update_activity_time()
         recieved = self.request(int(self.SESSION_TEMPERATURE))
         return recieved
     
     def toggle_led(self):
+        if self.is_timed_out():
+            return None
+        self.update_activity_time()
         rec = self.request(int(self.SESSION_TOGGLE_LED))
         return rec
         
@@ -102,6 +112,12 @@ class Session:
                 return buffer[1:6]
             else:
                 return None
+            
+    def is_timed_out(self):
+        return time.time() - self.last_activity_time > self.TIMEOUT_DURATION
+
+    def update_activity_time(self):
+        self.last_activity_time = time.time()
         
 
 
