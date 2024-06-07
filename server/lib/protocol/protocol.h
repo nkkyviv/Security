@@ -4,10 +4,10 @@
 #include <stdint.h>
 #include <stddef.h>
 
-void protocol_init(uint32_t speed);
+bool protocol_init();
 
-size_t protocol_send(uint8_t *buffer, size_t size);
+bool protocol_send(const uint8_t *buffer, size_t size);
 
-size_t protocol_receive(char *buffer, size_t size);
+size_t protocol_receive(uint8_t *buffer, size_t size);
 
 #endif

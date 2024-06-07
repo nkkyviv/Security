@@ -1,34 +1,26 @@
-/*using serial communication use serial0 to connect server and client*/
 #include "protocol.h"
 #include <Arduino.h>
 
-#define UART Serial
+#define BAUDRATE 115200
 
-void protocol_init(uint32_t speed)
+bool protocol_init()
 {
-  UART.begin(speed);
-  delay(2000);
+  Serial.begin(BAUDRATE);
+  return Serial;
 }
 
-size_t protocol_send(uint8_t *buffer, size_t size)
+bool protocol_send(const uint8_t *buffer, size_t size)
 {
-  return UART.write(buffer, size);
+  return (size == Serial.write(buffer, size));
 }
 
-size_t protocol_receive(char *buffer, size_t size)
+size_t protocol_receive(uint8_t *buffer, size_t size)
 {
-  size_t len = 0;
 
-  while (0 == UART.available())
+  while (0 == Serial.available())
   {
     ;
   }
 
-  while ((0 < UART.available()) && (len <= size))
-  {
-    buffer[len] = UART.read();
-    len++;
-  }
-
-  return len;
+  return Serial.readBytes(buffer, size);
 }
