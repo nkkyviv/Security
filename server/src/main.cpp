@@ -1,6 +1,5 @@
 #include <Arduino.h>
 #include "session.h"
-// #include "ser.h"
 
 #define LED_PIN 21
 
@@ -15,7 +14,6 @@ static void toggle_led(void)
 
 void setup()
 {
-  // ser_init();
   pinMode(LED_PIN, OUTPUT); 
   pinMode(GPIO_NUM_21, OUTPUT);
   delay(100);
@@ -24,7 +22,6 @@ void setup()
 
 void loop()
 {
-  // ser_run();
   response_t resp = {0};
 
   int req = session_request();
